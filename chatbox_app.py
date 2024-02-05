@@ -48,7 +48,28 @@ def process_user_input(user_input, model):
     # Process the collected data and return a response from your model here.
     # For now, we'll just return a string representation of the user_input dictionary.
     df = pd.DataFrame([user_input])
-    return f"Received input: {user_input}"
+    df['Date'] = pd.to_datetime(df['Data']).dt.date
+    df.rename(columns={'Countries':'Country', 'Genre':'Gender','Employee or Third Party' :'Employee Type'}, inplace=True)
+    df['Employee Type'] = df['Employee Type'].replace(['Third Party (Remote)'], 'Third Party')
+    df['Date'] = pd.to_datetime(df['Date'])
+    df['Year'] = df.Date.apply(lambda x : x.year)
+    df['Month'] = df.Date.apply(lambda x : x.month)
+    df['Day'] = df.Date.apply(lambda x : x.day)
+    df['Weekday'] = df.Date.apply(lambda x : x.day_name())
+    df['WeekofYear'] = df.Date.apply(lambda x : x.weekofyear)
+    df['Season'] = df['Month'].apply(monthToseasons)
+    return f"Received input: {df.shape}"
+
+def monthToseasons(x):
+    if x in [9, 10, 11]:
+        season = 'Spring'
+    elif x in [12, 1, 2]:
+        season = 'Summer'
+    elif x in [3, 4, 5]:
+        season = 'Autumn'
+    elif x in [6, 7, 8]:
+        season = 'Winter'
+    return season
 
 if __name__ == "__main__":
     main()
