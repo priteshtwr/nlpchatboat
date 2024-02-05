@@ -1,6 +1,7 @@
 import pickle
 import streamlit as st
 import tensorflow as tf
+import pandas as pd
 
 def load_model():
     model_path = r'nlp_chatbot.pkl'
@@ -46,6 +47,7 @@ def main():
 def process_user_input(user_input, model):
     # Process the collected data and return a response from your model here.
     # For now, we'll just return a string representation of the user_input dictionary.
+    df = pd.DataFrame([user_input])
     return f"Received input: {user_input}"
 
 if __name__ == "__main__":
