@@ -14,7 +14,7 @@ def main():
     st.markdown('<style>h1{color: #336699;}</style>', unsafe_allow_html=True)
     nlp_model = load_model()
     tf_version = tf.__version__
-    st.sidebar.header(f"Information (TensorFlow Version: {tf_version})")
+    st.sidebar.header(f"This is chatbot of Group 6 to predict the accident level")
     st.sidebar.markdown("This is a simple NLP chatbox for handling accident-related queries.")
 
     # User inputs for each column
