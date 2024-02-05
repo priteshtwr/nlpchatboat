@@ -3,7 +3,7 @@ import streamlit as st
 import tensorflow as tf
 
 def load_model():
-    model_path = r'C:\Users\pritesh.tiwary\Downloads\nlp_chatbot.pkl'
+    model_path = r'nlp_chatbot.pkl'
     with open(model_path, 'rb') as file:
         model = pickle.load(file)
     return model
