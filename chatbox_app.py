@@ -167,6 +167,9 @@ def process_user_input(user_input, model):
      tfs = pd.DataFrame(X, columns=["TFIDF_" + n for n in vec_tfidf.get_feature_names_out()])
      ind_tfidf_df = pd.concat([ind_tfidf_df.reset_index(drop=True), tfs.reset_index(drop=True)], axis=1)
     ind_feat_df = ind_featenc_df.join(pd.DataFrame(ind_glove_df).iloc[:,0:30].reset_index(drop=True))
+    scaler_X = StandardScaler()
+    ind_tfidf_df.iloc[:,:6] = scaler_X.fit_transform(ind_tfidf_df.iloc[:,:6])
+    model.predict(ind_tfidf_df)
     return f"Received input: {ind_feat_df.shape}"
 
 def monthToseasons(x):
