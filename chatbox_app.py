@@ -64,6 +64,7 @@ from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer, WordNetLemmatizer
 from sklearn.preprocessing import LabelEncoder
+from tqdm import tqdm
 import requests, zipfile, io
 
 def load_model():
@@ -137,12 +138,20 @@ def process_user_input(user_input, model):
     df['nb_words'] = df['Cleaned_Description'].apply(lambda x: len(x.split(' ')))
     df['Employee type'] = df['Employee Type'].str.replace(' ', '_')
     df['Critical Risk'] = df['Critical Risk'].str.replace('\n', '').str.replace(' ', '_')
+    embeddings_index = {}
+    EMBEDDING_FILE = './glove.6B.200d.txt'
+    f = open(EMBEDDING_FILE)
+    for line in tqdm(f):
+     values = line.split()
+     word = values[0]
+     coefs = np.asarray(values[1:], dtype='float32')
+     embeddings_index[word] = coefs
+    f.close()
     ind_featenc_df = pd.DataFrame()
     df['Season'] = df['Season'].replace('Summer', 'aSummer').replace('Autumn', 'bAutumn').replace('Winter', 'cWinter').replace('Spring', 'dSpring')
     ind_featenc_df['Season'] = LabelEncoder().fit_transform(df['Season']).astype(np.int8)
     df['Weekday'] = df['Weekday'].replace('Monday', 'aMonday').replace('Tuesday', 'bTuesday').replace('Wednesday', 'cWednesday').replace('Thursday', 'dThursday').replace('Friday', 'eFriday').replace('Saturday', 'fSaturday').replace('Sunday', 'gSunday')
     ind_featenc_df['Weekday'] = LabelEncoder().fit_transform(df['Weekday']).astype(np.int8)
-    ind_featenc_df['Accident Level'] = LabelEncoder().fit_transform(df['Accident Level']).astype(np.int8)
     ind_featenc_df['Potential Accident Level'] = LabelEncoder().fit_transform(df['Potential Accident Level']).astype(np.int8)
     Country_dummies = pd.get_dummies(df['Country'], columns=["Country"], drop_first=True)
     Local_dummies = pd.get_dummies(df['Local'], columns=["Local"], drop_first=True)
