@@ -2,6 +2,10 @@ import pickle
 import streamlit as st
 import tensorflow as tf
 import pandas as pd
+import re
+from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
+from nltk.stem import PorterStemmer, WordNetLemmatizer
 
 def load_model():
     model_path = r'nlp_chatbot.pkl'
@@ -58,6 +62,15 @@ def process_user_input(user_input, model):
     df['Weekday'] = df.Date.apply(lambda x : x.day_name())
     df['WeekofYear'] = df.Date.apply(lambda x : x.weekofyear)
     df['Season'] = df['Month'].apply(monthToseasons)
+    stop_words = set(stopwords.words('english'))
+    df['Cleaned_Description'] = df['Description'].apply(lambda x : x.lower())
+    df['Cleaned_Description'] = df['Cleaned_Description'].apply(lambda x : replace_words(x))
+    df['Cleaned_Description'] = df['Cleaned_Description'].apply(lambda x: remove_punctuation(x
+    df['Cleaned_Description'] = df['Cleaned_Description'].apply(lambda x: lemmatize(x))
+    df['Cleaned_Description'] = df['Cleaned_Description'].apply(lambda x: re.sub(' +', ' ', x))
+    df['Cleaned_Description'] = df['Cleaned_Description'].apply(lambda x: remove_stopwords(x))
+    df['line_length'] = df['Cleaned_Description'].str.len()
+    df['nb_words'] = df['Cleaned_Description'].apply(lambda x: len(x.split(' ')))
     return f"Received input: {df.shape}"
 
 def monthToseasons(x):
@@ -70,6 +83,32 @@ def monthToseasons(x):
     elif x in [6, 7, 8]:
         season = 'Winter'
     return season
+def preprocess_text(text):
+    words = word_tokenize(text)
+    filtered_words = [word for word in words if word.lower() not in stop_words]
+    return ' '.join(filtered_words)
+def replace_words(text):
+    # Replace 'word_to_replace' with 'replacement_word'
+    text = text.replace('word_to_replace', 'replacement_word')
+    return text
+def lemmatize(text):
+    lemmatizer = WordNetLemmatizer()
+    # Your implementation to lemmatize words goes here
+    # For example:
+    words = text.split()
+    lemmatized_words = [lemmatizer.lemmatize(word) for word in words]
+    return ' '.join(lemmatized_words)
+def remove_punctuation(text):
+    # Remove punctuation from the text
+    translator = str.maketrans('', '', string.punctuation)
+    text = text.translate(translator)
+    return text
+def remove_stopwords(text):
+    stop_words = set(stopwords.words('english'))
+    word_tokens = word_tokenize(text)
+    filtered_text = [word for word in word_tokens if word.lower() not in stop_words]
+    return ' '.join(filtered_text)
+
 
 if __name__ == "__main__":
     main()
