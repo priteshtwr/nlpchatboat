@@ -65,7 +65,7 @@ def process_user_input(user_input, model):
     stop_words = set(stopwords.words('english'))
     df['Cleaned_Description'] = df['Description'].apply(lambda x : x.lower())
     df['Cleaned_Description'] = df['Cleaned_Description'].apply(lambda x : replace_words(x))
-    df['Cleaned_Description'] = df['Cleaned_Description'].apply(lambda x: remove_punctuation(x
+    df['Cleaned_Description'] = df['Cleaned_Description'].apply(lambda x: remove_punctuation(x))
     df['Cleaned_Description'] = df['Cleaned_Description'].apply(lambda x: lemmatize(x))
     df['Cleaned_Description'] = df['Cleaned_Description'].apply(lambda x: re.sub(' +', ' ', x))
     df['Cleaned_Description'] = df['Cleaned_Description'].apply(lambda x: remove_stopwords(x))
