@@ -22,6 +22,7 @@ from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer, WordNetLemmatizer
 from sklearn.preprocessing import LabelEncoder
+import requests, zipfile, io
 
 def load_model():
     model_path = r'nlp_chatbot.pkl'
