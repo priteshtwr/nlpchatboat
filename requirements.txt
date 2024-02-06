@@ -8,3 +8,4 @@ wordcloud
 requests
 scikit-learn
 seaborn
+unidecode
