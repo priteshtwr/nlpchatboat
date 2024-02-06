@@ -205,6 +205,7 @@ def remove_stopwords(text):
     filtered_text = [word for word in word_tokens if word.lower() not in stop_words]
     return ' '.join(filtered_text)
 def sent2vec(s):
+    stop_words = stopwords.words('english')
     words = str(s).lower()
     words = word_tokenize(words)
     words = [w for w in words if not w in stop_words]
