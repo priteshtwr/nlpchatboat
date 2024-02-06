@@ -6,3 +6,4 @@ matplotlib
 nltk
 wordcloud
 requests
+scikit-learn
