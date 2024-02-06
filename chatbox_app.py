@@ -1,6 +1,5 @@
 import pickle
 import streamlit as st
-#Import necessary libraries
 import pandas as pd
 import numpy as np
 pd.set_option('max_colwidth', None)
@@ -66,6 +65,7 @@ from nltk.stem import PorterStemmer, WordNetLemmatizer
 from sklearn.preprocessing import LabelEncoder
 from tqdm import tqdm
 import requests, zipfile, io
+from sklearn.feature_extraction.text import TfidfVectorizer
 
 def load_model():
     model_path = r'nlp_chatbot.pkl'
@@ -109,8 +109,6 @@ def main():
         st.text_area("Chatbot Response:", value=response, height=100, max_chars=500, key="chat_response", disabled=True)
 
 def process_user_input(user_input, model):
-    # Process the collected data and return a response from your model here.
-    # For now, we'll just return a string representation of the user_input dictionary.
     url = 'https://nlp.stanford.edu/data/glove.6B.zip'
     response = requests.get(url)
     response.raise_for_status()
@@ -161,7 +159,15 @@ def process_user_input(user_input, model):
     CR_dummies = pd.get_dummies(df['Critical Risk'], columns=['Critical Risk'], prefix='CR', drop_first=True)
     ind_featenc_df = ind_featenc_df.join(Country_dummies.reset_index(drop=True)).join(Local_dummies.reset_index(drop=True)).join(Gender_dummies.reset_index(drop=True)).join(IS_dummies.reset_index(drop=True)).join(EmpType_dummies.reset_index(drop=True)).join(CR_dummies.reset_index(drop=True))
     ind_featenc_df = df[['Year','Month','Day','WeekofYear']].reset_index(drop=True).join(ind_featenc_df.reset_index(drop=True))
-    return f"Received input: {df.shape}"
+    ind_glove_df = [sent2vec(x) for x in tqdm(df['Cleaned_Description'])]
+    ind_tfidf_df = pd.DataFrame()
+    for i in range(1, 4):
+     vec_tfidf = TfidfVectorizer(max_features=10, norm='l2', stop_words='english', lowercase=True, use_idf=True, ngram_range=(i, i))
+     X = vec_tfidf.fit_transform(df['Cleaned_Description']).toarray()
+     tfs = pd.DataFrame(X, columns=["TFIDF_" + n for n in vec_tfidf.get_feature_names_out()])
+     ind_tfidf_df = pd.concat([ind_tfidf_df.reset_index(drop=True), tfs.reset_index(drop=True)], axis=1)
+    ind_feat_df = ind_featenc_df.join(pd.DataFrame(ind_glove_df).iloc[:,0:30].reset_index(drop=True))
+    return f"Received input: {ind_feat_df.shape}"
 
 def monthToseasons(x):
     if x in [9, 10, 11]:
