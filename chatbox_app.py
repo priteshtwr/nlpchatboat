@@ -67,6 +67,11 @@ def main():
 def process_user_input(user_input, model):
     # Process the collected data and return a response from your model here.
     # For now, we'll just return a string representation of the user_input dictionary.
+    url = 'https://nlp.stanford.edu/data/glove.6B.zip'
+    response = requests.get(url)
+    response.raise_for_status()
+    zip_file = zipfile.ZipFile(io.BytesIO(response.content))
+    zip_file.extractall('.') 
     df = pd.DataFrame([user_input])
     df['Date'] = pd.to_datetime(df['Data']).dt.date
     df.rename(columns={'Countries':'Country', 'Genre':'Gender','Employee or Third Party' :'Employee Type'}, inplace=True)
@@ -102,11 +107,8 @@ def process_user_input(user_input, model):
     IS_dummies = pd.get_dummies(df['Industry Sector'], columns=['Industry Sector'], prefix='IS', drop_first=True)
     EmpType_dummies = pd.get_dummies(df['Employee type'], columns=['Employee type'], prefix='EmpType', drop_first=True)
     CR_dummies = pd.get_dummies(df['Critical Risk'], columns=['Critical Risk'], prefix='CR', drop_first=True)
-
-# Merge the above dataframe with the original dataframe ind_feat_df
-ind_featenc_df = ind_featenc_df.join(Country_dummies.reset_index(drop=True)).join(Local_dummies.reset_index(drop=True)).join(Gender_dummies.reset_index(drop=True)).join(IS_dummies.reset_index(drop=True)).join(EmpType_dummies.reset_index(drop=True)).join(CR_dummies.reset_index(drop=True))
-
-ind_featenc_df = df[['Year','Month','Day','WeekofYear']].reset_index(drop=True).join(ind_featenc_df.reset_index(drop=True))
+    ind_featenc_df = ind_featenc_df.join(Country_dummies.reset_index(drop=True)).join(Local_dummies.reset_index(drop=True)).join(Gender_dummies.reset_index(drop=True)).join(IS_dummies.reset_index(drop=True)).join(EmpType_dummies.reset_index(drop=True)).join(CR_dummies.reset_index(drop=True))
+    ind_featenc_df = df[['Year','Month','Day','WeekofYear']].reset_index(drop=True).join(ind_featenc_df.reset_index(drop=True))
     return f"Received input: {df.shape}"
 
 def monthToseasons(x):
