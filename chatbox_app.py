@@ -3,6 +3,20 @@ import streamlit as st
 import tensorflow as tf
 import pandas as pd
 import re
+import nltk
+nltk.download('stopwords')
+nltk.download('punkt')
+nltk.download('omw-1.4')
+nltk.download('wordnet')
+nltk.download('maxent_ne_chunker')
+nltk.download('words')
+from nltk.corpus import stopwords
+from wordcloud import WordCloud, STOPWORDS, ImageColorGenerator
+from nltk.stem.porter import PorterStemmer
+from nltk.stem import SnowballStemmer
+from nltk.stem import LancasterStemmer
+from nltk.stem import WordNetLemmatizer
+from nltk.tokenize import word_tokenize, sent_tokenize
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer, WordNetLemmatizer
