@@ -25,9 +25,6 @@ from nltk.stem import SnowballStemmer
 from nltk.stem import LancasterStemmer
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize, sent_tokenize
-import spacy
-nlp = spacy.load('en_core_web_sm')  # Loading the envrionment config
-from spacy.lang.en import English
 en_nlp = English()
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
