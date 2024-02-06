@@ -11,3 +11,4 @@ seaborn
 unidecode
 autocorrect
 spacy
+beautifulsoup4
