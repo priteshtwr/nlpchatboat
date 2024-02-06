@@ -5,3 +5,4 @@ numpy
 matplotlib
 nltk
 wordcloud
+string

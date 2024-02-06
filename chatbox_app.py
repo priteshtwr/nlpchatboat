@@ -4,6 +4,7 @@ import tensorflow as tf
 import pandas as pd
 import re
 import nltk
+import string
 nltk.download('stopwords')
 nltk.download('punkt')
 nltk.download('omw-1.4')
