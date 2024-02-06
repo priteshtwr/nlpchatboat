@@ -21,6 +21,7 @@ from nltk.tokenize import word_tokenize, sent_tokenize
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer, WordNetLemmatizer
+from sklearn.preprocessing import LabelEncoder
 
 def load_model():
     model_path = r'nlp_chatbot.pkl'
@@ -86,6 +87,26 @@ def process_user_input(user_input, model):
     df['Cleaned_Description'] = df['Cleaned_Description'].apply(lambda x: remove_stopwords(x))
     df['line_length'] = df['Cleaned_Description'].str.len()
     df['nb_words'] = df['Cleaned_Description'].apply(lambda x: len(x.split(' ')))
+    df['Employee type'] = df['Employee Type'].str.replace(' ', '_')
+    df['Critical Risk'] = df['Critical Risk'].str.replace('\n', '').str.replace(' ', '_')
+    ind_featenc_df = pd.DataFrame()
+    df['Season'] = df['Season'].replace('Summer', 'aSummer').replace('Autumn', 'bAutumn').replace('Winter', 'cWinter').replace('Spring', 'dSpring')
+    ind_featenc_df['Season'] = LabelEncoder().fit_transform(df['Season']).astype(np.int8)
+    df['Weekday'] = df['Weekday'].replace('Monday', 'aMonday').replace('Tuesday', 'bTuesday').replace('Wednesday', 'cWednesday').replace('Thursday', 'dThursday').replace('Friday', 'eFriday').replace('Saturday', 'fSaturday').replace('Sunday', 'gSunday')
+    ind_featenc_df['Weekday'] = LabelEncoder().fit_transform(df['Weekday']).astype(np.int8)
+    ind_featenc_df['Accident Level'] = LabelEncoder().fit_transform(df['Accident Level']).astype(np.int8)
+    ind_featenc_df['Potential Accident Level'] = LabelEncoder().fit_transform(df['Potential Accident Level']).astype(np.int8)
+    Country_dummies = pd.get_dummies(df['Country'], columns=["Country"], drop_first=True)
+    Local_dummies = pd.get_dummies(df['Local'], columns=["Local"], drop_first=True)
+    Gender_dummies = pd.get_dummies(df['Gender'], columns=["Gender"], drop_first=True)
+    IS_dummies = pd.get_dummies(df['Industry Sector'], columns=['Industry Sector'], prefix='IS', drop_first=True)
+    EmpType_dummies = pd.get_dummies(df['Employee type'], columns=['Employee type'], prefix='EmpType', drop_first=True)
+    CR_dummies = pd.get_dummies(df['Critical Risk'], columns=['Critical Risk'], prefix='CR', drop_first=True)
+
+# Merge the above dataframe with the original dataframe ind_feat_df
+ind_featenc_df = ind_featenc_df.join(Country_dummies.reset_index(drop=True)).join(Local_dummies.reset_index(drop=True)).join(Gender_dummies.reset_index(drop=True)).join(IS_dummies.reset_index(drop=True)).join(EmpType_dummies.reset_index(drop=True)).join(CR_dummies.reset_index(drop=True))
+
+ind_featenc_df = df[['Year','Month','Day','WeekofYear']].reset_index(drop=True).join(ind_featenc_df.reset_index(drop=True))
     return f"Received input: {df.shape}"
 
 def monthToseasons(x):
@@ -123,6 +144,22 @@ def remove_stopwords(text):
     word_tokens = word_tokenize(text)
     filtered_text = [word for word in word_tokens if word.lower() not in stop_words]
     return ' '.join(filtered_text)
+def sent2vec(s):
+    words = str(s).lower()
+    words = word_tokenize(words)
+    words = [w for w in words if not w in stop_words]
+    words = [w for w in words if w.isalpha()]
+    M = []
+    for w in words:
+        try:
+            M.append(embeddings_index[w])
+        except:
+            continue
+    M = np.array(M)
+    v = M.sum(axis=0)
+    if type(v) != np.ndarray:
+        return np.zeros(300)
+    return v / np.sqrt((v ** 2).sum())
 
 
 if __name__ == "__main__":
