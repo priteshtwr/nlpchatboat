@@ -12,3 +12,4 @@ unidecode
 autocorrect
 spacy
 beautifulsoup4
+gensim
