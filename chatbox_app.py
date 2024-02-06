@@ -66,6 +66,8 @@ from sklearn.preprocessing import LabelEncoder
 from tqdm import tqdm
 import requests, zipfile, io
 from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.preprocessing import StandardScaler
+
 
 def load_model():
     model_path = r'nlp_chatbot.pkl'
