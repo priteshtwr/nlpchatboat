@@ -77,12 +77,12 @@ def load_model():
 
 def main():
     st.set_page_config(page_title="NLP Chatbox for Accident", page_icon="🚑", layout="centered")
-    st.title("NLP Chatbox for Accident")
+    st.title("NLP Chatbot for Accident")
     st.markdown('<style>h1{color: #336699;}</style>', unsafe_allow_html=True)
     nlp_model = load_model()
     tf_version = tf.__version__
     st.sidebar.header(f"This is chatbot of Group 6 to predict the accident level")
-    st.sidebar.markdown("This is a simple NLP chatbox for handling accident-related queries.")
+    st.sidebar.markdown("This is a simple NLP chatbot for handling accident-related queries.")
 
     # User inputs for each column
     data_input = st.text_input("Data:")
