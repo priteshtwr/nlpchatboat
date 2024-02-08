@@ -67,6 +67,7 @@ from tqdm import tqdm
 import requests, zipfile, io
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.preprocessing import StandardScaler
+import unicodedata
 
 
 def load_model():
