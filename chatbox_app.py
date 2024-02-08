@@ -259,6 +259,7 @@ def des_cleaning(text):
     
 def predict_text_and_categorical(text_samples, categorical_samples, model):
     # Preprocess text data
+    tokenizer = Tokenizer(num_words=5000)
     text_data = [" ".join(des_cleaning(text)) for text in text_samples]
     x = tokenizer.texts_to_sequences(text_data)
     input_1_data = pad_sequences(x, maxlen=100)
