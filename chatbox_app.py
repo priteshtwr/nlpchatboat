@@ -177,7 +177,7 @@ def process_user_input(user_input, model):
     result = predict_text_and_categorical(text_samples, ind_tfidf_df,model)
     #model.predict([ind_tfidf_df,ind_tfidf_df])
     #return f"Received input: [0.7049883  0.10264347 0.08182887 0.0828189  0.02772051]"
-    return f"Received input: {ind_tfidf_df.shape}"
+    return f"Received input: {result[0]}"
 
 def monthToseasons(x):
     if x in [9, 10, 11]:
@@ -263,12 +263,17 @@ def predict_text_and_categorical(text_samples, categorical_samples, model):
     tokenizer = Tokenizer(num_words=10000)
     x = tokenizer.texts_to_sequences(text_data)
     input_1_data = pad_sequences(x, maxlen=100)
-
+    
     # Preprocess categorical data
     input_2_data = np.array(categorical_samples)
-
-    # Make predictions
-    predictions = model.predict([input_1_data, input_2_data])
+    original_data = categorical_samples.iloc[0].values  # Extract the row as a NumPy array
+    length = len(text_samples)
+    replicated_data = np.tile(original_data, (length, 1))
+    expanded_data = np.zeros((length, 85))
+    expanded_data[:, :30] = replicated_data
+    expanded_df = pd.DataFrame(expanded_data)
+    predictions = model.predict([input_1_data,expanded_df])
+    print(predictions[0])
     return predictions
 
 
