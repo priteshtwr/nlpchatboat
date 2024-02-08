@@ -172,7 +172,7 @@ def process_user_input(user_input, model):
     scaler_X = StandardScaler()
     ind_tfidf_df.iloc[:,:6] = scaler_X.fit_transform(ind_tfidf_df.iloc[:,:6])
     #model.predict(ind_tfidf_df)
-    return f"Received input: [0.7049883  0.10264347 0.08182887 0.0828189  0.02772051]}"
+    return f"Received input: [0.7049883  0.10264347 0.08182887 0.0828189  0.02772051]"
     #return f"Received input: {ind_feat_df.shape}"
 
 def monthToseasons(x):
