@@ -174,8 +174,8 @@ def process_user_input(user_input, model):
     ind_tfidf_df.iloc[:,:6] = scaler_X.fit_transform(ind_tfidf_df.iloc[:,:6])
     text_samples = 'observing pulp overflow overflow reception drawer thickener filter operator approach verify operation pump making sure stopped press keypad start pump getting start proceeds remove guard manipulates motor pump transmission strip left hand imprisoned pulley motor transmission belt'  # Replace with your actual text samples
     #categorical_samples =ind_feat_df.values[:len(text_samples)]
-    #result = predict_text_and_categorical(text_samples, categorical_samples,model)
-    model.predict([ind_tfidf_df,ind_tfidf_df])
+    result = predict_text_and_categorical(text_samples, ind_tfidf_df,model)
+    #model.predict([ind_tfidf_df,ind_tfidf_df])
     #return f"Received input: [0.7049883  0.10264347 0.08182887 0.0828189  0.02772051]"
     return f"Received input: {ind_tfidf_df.shape}"
 
